@@ -9,9 +9,9 @@ class Navbar extends Component {
     
         return(
             <nav>
-            <div class="nav-wrapper">
-        <a href="#" class="brand-logo">{this.props.appName}</a>
-              <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <div className="nav-wrapper">
+        <a href="#" className="brand-logo">{this.props.appName}</a>
+              <ul id="nav-mobile" className="right hide-on-med-and-down">
                
               </ul>
             </div>

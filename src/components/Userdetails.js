@@ -4,9 +4,10 @@ class Userdetails extends Component {
   constructor() {
     super();
     this.state = {
-      users: null,
+      users: [],
       isLoaded: false,
-      user: {
+      error: null,
+  user: {
         "login": "mojombo",
         "id": 1,
         "node_id": "MDQ6VXNlcjE=",
@@ -42,44 +43,97 @@ class Userdetails extends Component {
     }
   }
 
-  componentDidMount() {
-    fetch("https://api.github.com/users")
-      .then((res) => {
-        console.log(res.json())
-        return res.json()
+  // componentDidMount() {
+  //   fetch("https://api.github.com/users")
+  //     .then((res) => {
+  //       console.log(res.json())
+  //       const users =  res.json();
+  //       this.setState({ users })
+  //     })
+    
+         
+        
+      //   (error) => {
+      //     this.setState({
+      //       isLoaded: true,
+      //       error
+      //     });
+      //   }
+      // )
+  // }
+
+
+
+
+  // render() {
+  //   const { error, isLoaded, users } = this.state;
+  //   console.log(this.state.users);
+  //   return (
+  //     <div>
+
+  //       {!this.state.isLoaded && <h1>Loading...</h1>}
+
+  //      <img src={this.state.user.avatar_url} className="materialboxed" />
+  //       <h2>UserName-{this.state.user.name}</h2> 
+
+
+ 
+  //       {users.map(item => (<div className="materialboxed">
+  //               <img src={this.state.users.avatar_url} className="materialboxed" />
+  //                       <h2>UserName-{this.state.users.name}</h2>
+  //           </div>))} 
+
+            
+  //     </div>
+  //   )
+  // }
+
+
+
+  fetchUsers() {
+  fetch("https://api.github.com/users")
+    // We get the API response and receive data in JSON format...
+    .then(response => response.json())
+    // ...then we update the users state
+    .then(data =>
+      this.setState({
+        users: data,
+        isLoaded: false,
       })
-      .then(
-        (result) => {
-          console.log(result)
-          this.setState({
-            isLoaded: true,
-            users: result
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+    )
+    // Catch any errors we hit and update the app
+    .catch(error => this.setState({ error, isLoaded: false }));
   }
 
-
-
+  componentDidMount(){
+    this.fetchUsers();
+  }
 
   render() {
+    const { isLoaded, users, error } = this.state;
     return (
-      <>
-
-        {!this.state.isLoaded && <h1>Loading...</h1>}
-        <img src={this.state.user.avatar_url} className="materialboxed" />
-        <h2>UserName-{this.state.user.name}</h2>
-      </>
-    )
+      <React.Fragment>
+        <h1>Hello, These are my Users : </h1>
+        
+        {error ? <p>{error.message}</p> : null}
+       
+        {!isLoaded ? (
+          users.map(user => {
+            const { login, id, avatar_url } = user;
+            return (
+              <div key={id}>
+                <h5>My Name Is :  {login} </h5>
+                <img src={avatar_url} className="materialboxed"/>
+                <hr />
+              </div>
+            );
+          })
+        // If there is a delay in data, let's let the user know it's loading
+        ) : (
+          <h3>Loading...</h3>
+        )}
+      </React.Fragment>
+    );
   }
 }
 
